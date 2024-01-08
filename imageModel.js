@@ -6,6 +6,9 @@ const imageSchema = new mongoose.Schema({
     price: Number,
     imageData: String, // Store only the file name
     category: String,
+    rated: String,
+    used: String,
+    rating: { type: Number, default: 0 },
   });
   
   const Image = mongoose.model("Image", imageSchema);
