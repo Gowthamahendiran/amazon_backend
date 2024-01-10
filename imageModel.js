@@ -11,6 +11,7 @@ const imageSchema = new mongoose.Schema({
     rating: { type: Number, default: 0 },
     prime: String,
     delivery: String,
+    originalPrice: String,
   });
   
   const Image = mongoose.model("Image", imageSchema);

@@ -34,7 +34,7 @@ const storage = multer.diskStorage({
 
 
 app.post("/api/uploadd", upload.fields([{ name: "profileImage" }]), async (req, res) => {
-    const { title, description, price, category,rating , rated, used, prime, delivery } = req.body;
+    const { title, description, price, category,rating , rated, used, prime, delivery,originalPrice } = req.body;
   
     try {
       const user = new Image({
@@ -47,6 +47,7 @@ app.post("/api/uploadd", upload.fields([{ name: "profileImage" }]), async (req, 
         used,
         prime,
         delivery,
+        originalPrice,
         imageData: req.files["profileImage"][0].filename, // Save only the file name
       });
   
@@ -62,7 +63,7 @@ app.post("/api/uploadd", upload.fields([{ name: "profileImage" }]), async (req, 
 
   app.get("/api/makeup-products", async (req, res) => {
     try {
-      const makeupProducts = await Image.find({ category: 'Makeup' }, { title: 1, description: 1, price: 1, imageData: 1, category: 1 , rating: 1, rated: 1, used: 1, prime: 1, delivery: 1});
+      const makeupProducts = await Image.find({ category: 'Makeup' }, { title: 1, description: 1, price: 1, imageData: 1, category: 1 , rating: 1, rated: 1, used: 1, prime: 1, delivery: 1, originalPrice: 1});
       console.log("Fetched makeup products:", makeupProducts);
       res.status(200).json(makeupProducts);
     } catch (error) {
@@ -88,6 +89,7 @@ app.post("/api/uploadd", upload.fields([{ name: "profileImage" }]), async (req, 
         used: 1,
         prime: 1,
         delivery: 1,
+        originalPrice: 1
       });
   
       if (!makeupProduct) {
@@ -105,7 +107,7 @@ app.post("/api/uploadd", upload.fields([{ name: "profileImage" }]), async (req, 
 
   app.get("/api/fashion-products", async (req, res) => {
     try {
-      const makeupProducts = await Image.find({ category: 'B' }, { title: 1, description: 1, price: 1, imageData: 1, category: 1 });
+      const makeupProducts = await Image.find({ category: 'B' }, { title: 1, description: 1, price: 1, imageData: 1, category: 1 , originalPrice: 1});
       console.log("Fetched makeup products:", makeupProducts);
       res.status(200).json(makeupProducts);
     } catch (error) {
@@ -115,25 +117,6 @@ app.post("/api/uploadd", upload.fields([{ name: "profileImage" }]), async (req, 
   });
 
 
-
-  // app.get("/api/search-results", async (req, res) => {
-  //   const { query } = req.query;
-  
-  //   try {
-  //     const searchResults = await Image.find({
-  //       $or: [
-  //         { title: { $regex: query, $options: "i" } }, 
-  //         { description: { $regex: query, $options: "i" } },
-  //       ],
-  //     },
-  //     { title: 1, description: 1, price: 1, imageData: 1, rating: 1 }
-  //     );
-  //     res.status(200).json(searchResults);
-  //   } catch (error) {
-  //     console.error("Error fetching search results:", error);
-  //     res.status(500).json({ error: "Internal Server Error" });
-  //   }
-  // });
 
   app.get("/api/search-results", async (req, res) => {
     const { query } = req.query;
@@ -146,7 +129,7 @@ app.post("/api/uploadd", upload.fields([{ name: "profileImage" }]), async (req, 
             { description: { $regex: query, $options: "i" } },
           ],
         },
-        { title: 1, description: 1, price: 1, imageData: 1, rating: 1 }
+        { title: 1, description: 1, price: 1, imageData: 1, rating: 1, originalPrice: 1 }
       );
   
       res.status(200).json(searchResults);
