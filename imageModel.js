@@ -12,6 +12,10 @@ const imageSchema = new mongoose.Schema({
     prime: String,
     delivery: String,
     originalPrice: String,
+    offerOneTitle: String,
+    offerOneDescription: String,
+    offerTwoDescription: String,
+    offerTwoTitle: String,
   });
   
   const Image = mongoose.model("Image", imageSchema);

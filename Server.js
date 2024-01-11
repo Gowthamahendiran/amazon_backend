@@ -16,6 +16,17 @@ mongoose.connect('mongodb://127.0.0.1:27017/Amazon_Clone', {
 });
 
 
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  number: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+});
+
+
+const User = mongoose.model("User", userSchema);
+
+
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -33,8 +44,58 @@ const storage = multer.diskStorage({
 
 
 
+  app.post("/api/signup", async (req, res) => {
+    const { name, number, email, password } = req.body;
+  
+    try {
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ error: "Email already exists" });
+      }
+  
+      const newUser = new User({
+        name,
+        number,
+        email,
+        password,
+      });
+  
+      await newUser.save();
+  
+      res.status(201).json({ message: "Signup successful" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "An error occurred during signup" });
+    }
+  });
+
+  app.post("/api/login", async (req, res) => {
+    const { email, password } = req.body;
+  
+    try {
+      // Check if the user exists
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(401).json({ error: "Invalid email or password" });
+      }
+  
+      // Check if the password is correct
+      if (password !== user.password) {
+        return res.status(401).json({ error: "Invalid email or password" });
+      }
+  
+      res.status(200).json({ user });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "An error occurred during login" });
+    }
+  });
+  
+
+
+
 app.post("/api/uploadd", upload.fields([{ name: "profileImage" }]), async (req, res) => {
-    const { title, description, price, category,rating , rated, used, prime, delivery,originalPrice } = req.body;
+    const { title, description, price, category,rating , rated, used, prime, delivery, originalPrice, offerOneDescription, offerOneTitle, offerTwoDescription, offerTwoTitle} = req.body;
   
     try {
       const user = new Image({
@@ -48,6 +109,10 @@ app.post("/api/uploadd", upload.fields([{ name: "profileImage" }]), async (req, 
         prime,
         delivery,
         originalPrice,
+        offerOneDescription,
+        offerOneTitle,
+        offerTwoDescription,
+        offerTwoTitle,
         imageData: req.files["profileImage"][0].filename, // Save only the file name
       });
   
@@ -63,7 +128,7 @@ app.post("/api/uploadd", upload.fields([{ name: "profileImage" }]), async (req, 
 
   app.get("/api/makeup-products", async (req, res) => {
     try {
-      const makeupProducts = await Image.find({ category: 'Makeup' }, { title: 1, description: 1, price: 1, imageData: 1, category: 1 , rating: 1, rated: 1, used: 1, prime: 1, delivery: 1, originalPrice: 1});
+      const makeupProducts = await Image.find({ category: 'Makeup' }, { title: 1, description: 1, price: 1, imageData: 1, category: 1 , rating: 1, rated: 1, used: 1, prime: 1, delivery: 1, originalPrice: 1, offerOneDescription:1 , offerOneTitle: 1, offerTwoDescription:1 , offerTwoTitle: 1});
       console.log("Fetched makeup products:", makeupProducts);
       res.status(200).json(makeupProducts);
     } catch (error) {
@@ -89,7 +154,11 @@ app.post("/api/uploadd", upload.fields([{ name: "profileImage" }]), async (req, 
         used: 1,
         prime: 1,
         delivery: 1,
-        originalPrice: 1
+        originalPrice: 1,
+        offerOneDescription:1 ,
+        offerOneTitle: 1,
+        offerTwoDescription:1 ,
+        offerTwoTitle: 1,
       });
   
       if (!makeupProduct) {
