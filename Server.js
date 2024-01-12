@@ -97,7 +97,7 @@ const storage = multer.diskStorage({
 
 
   app.post("/api/checkout", async (req, res) => {
-    const { productId, image, price, quantity, description } = req.body;
+    const { productId, image, price, quantity, description, title } = req.body;
   
     try {
       // Assuming you don't need to associate with a specific user
@@ -107,6 +107,7 @@ const storage = multer.diskStorage({
         price,
         quantity,
         description,
+        title
       });
   
       await cartItem.save();
@@ -129,6 +130,25 @@ app.get("/api/cart", async (req, res) => {
   } catch (error) {
     console.error("Error fetching cart items:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+// Update your server.js or a separate route file
+app.delete("/api/cart/:itemId", async (req, res) => {
+  const { itemId } = req.params;
+
+  try {
+    const deletedCartItem = await CartItem.findByIdAndDelete(itemId);
+
+    if (!deletedCartItem) {
+      return res.status(404).json({ error: 'Cart item not found' });
+    }
+
+    res.status(204).send(); 
+  } catch (error) {
+    console.error('Error deleting cart item:', error);
+    res.status(500).json({ error: 'Internal Server Error', details: error.message });
   }
 });
 

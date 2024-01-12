@@ -6,6 +6,7 @@ const cartItemSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   quantity: { type: Number, required: true },
   description: { type: String },
+  title: {type: String },
 });
 
 const CartItem = mongoose.model("CartItem", cartItemSchema);
