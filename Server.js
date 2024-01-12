@@ -5,6 +5,8 @@ const Image = require("./imageModel");
 const cors = require("cors"); // Import the cors middleware
 const app = express();
 const PORT = 5000;
+const CartItem = require("./cartModel");
+
 
 app.use(express.json());
 app.use(cors()); // Enable CORS for all routes
@@ -21,6 +23,7 @@ const userSchema = new mongoose.Schema({
   number: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  cart: [{ type: mongoose.Schema.Types.ObjectId, ref: "CartItem" }],
 });
 
 
@@ -91,6 +94,43 @@ const storage = multer.diskStorage({
     }
   });
   
+
+
+  app.post("/api/checkout", async (req, res) => {
+    const { productId, image, price, quantity, description } = req.body;
+  
+    try {
+      // Assuming you don't need to associate with a specific user
+      const cartItem = new CartItem({
+        productId,
+        image,
+        price,
+        quantity,
+        description,
+      });
+  
+      await cartItem.save();
+  
+      res.status(200).json({ message: "Product added to cart successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "An error occurred during checkout" });
+    }
+  });
+  
+
+  // Add this to your server.js
+app.get("/api/cart", async (req, res) => {
+  try {
+    // Fetch cart items from the database
+    // Replace 'CartItem' with your actual cart item model
+    const cartItems = await CartItem.find();
+    res.status(200).json(cartItems);
+  } catch (error) {
+    console.error("Error fetching cart items:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 
 
