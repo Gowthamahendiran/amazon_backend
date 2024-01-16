@@ -236,7 +236,7 @@ app.post("/api/uploadd", upload.fields([{ name: "profileImage" }]), async (req, 
 
   app.get("/api/fashion-products", async (req, res) => {
     try {
-      const makeupProducts = await Image.find({ category: 'B' }, { title: 1, description: 1, price: 1, imageData: 1, category: 1 , originalPrice: 1});
+      const makeupProducts = await Image.find({ category: 'Home_Ess' }, { title: 1, description: 1, price: 1, imageData: 1, category: 1 , rating: 1, rated: 1, used: 1, prime: 1, delivery: 1, originalPrice: 1, offerOneDescription:1 , offerOneTitle: 1, offerTwoDescription:1 , offerTwoTitle: 1});
       console.log("Fetched makeup products:", makeupProducts);
       res.status(200).json(makeupProducts);
     } catch (error) {
@@ -244,6 +244,43 @@ app.post("/api/uploadd", upload.fields([{ name: "profileImage" }]), async (req, 
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
+
+
+
+  app.get("/api/fashion-products/:productId", async (req, res) => {
+    const { productId } = req.params;
+  
+    try {
+      const makeupProduct = await Image.findById(productId, {
+        title: 1,
+        description: 1,
+        price: 1,
+        imageData: 1,
+        category: 1,
+        rating: 1,
+        rated: 1, 
+        used: 1,
+        prime: 1,
+        delivery: 1,
+        originalPrice: 1,
+        offerOneDescription:1 ,
+        offerOneTitle: 1,
+        offerTwoDescription:1 ,
+        offerTwoTitle: 1,
+      });
+  
+      if (!makeupProduct) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+  
+      res.status(200).json(makeupProduct);
+    } catch (error) {
+      console.error("Error fetching makeup product by ID:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+
 
 
 
