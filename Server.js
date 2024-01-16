@@ -424,6 +424,221 @@ app.post("/api/uploadd", upload.fields([{ name: "profileImage" }]), async (req, 
   });
 
 
+app.get("/api/history", async (req, res) => {
+  try {
+    const historyProducts = [];
+
+    const categories = ['Makeup', 'Home_Ess', 'smart', 'value', 'Dress'];
+
+    for (const category of categories) {
+      const products = await Image.aggregate([
+        { $match: { category } },
+        { $sample: { size: 2 } },
+        {
+          $project: {
+            title: 1,
+            description: 1,
+            price: 1,
+            imageData: 1,
+            rating: 1,
+            originalPrice: 1,
+            offerOneDescription: 1,
+            offerOneTitle: 1,
+            offerTwoDescription: 1,
+            offerTwoTitle: 1,
+          },
+        },
+      ]);
+
+      historyProducts.push(...products);
+    }
+
+    console.log("Fetched history products:", historyProducts);
+    res.status(200).json(historyProducts);
+  } catch (error) {
+    console.error("Error fetching history products:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+
+app.get("/api/history/:productId", async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+    const makeupProduct = await Image.findById(productId, {
+      title: 1,
+      description: 1,
+      price: 1,
+      imageData: 1,
+      category: 1,
+      rating: 1,
+      rated: 1, 
+      used: 1,
+      prime: 1,
+      delivery: 1,
+      originalPrice: 1,
+      offerOneDescription:1 ,
+      offerOneTitle: 1,
+      offerTwoDescription:1 ,
+      offerTwoTitle: 1,
+    });
+
+    if (!makeupProduct) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    res.status(200).json(makeupProduct);
+  } catch (error) {
+    console.error("Error fetching makeup product by ID:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+
+app.get("/api/WFH", async (req, res) => {
+  try {
+    const makeupProducts = await Image.find({ category: 'WFH' }, { title: 1, description: 1, price: 1, imageData: 1, category: 1 , rating: 1, rated: 1, used: 1, prime: 1, delivery: 1, originalPrice: 1, offerOneDescription:1 , offerOneTitle: 1, offerTwoDescription:1 , offerTwoTitle: 1});
+    console.log("Fetched makeup products:", makeupProducts);
+    res.status(200).json(makeupProducts);
+  } catch (error) {
+    console.error("Error fetching makeup products:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+app.get("/api/WFH/:productId", async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+    const makeupProduct = await Image.findById(productId, {
+      title: 1,
+      description: 1,
+      price: 1,
+      imageData: 1,
+      category: 1,
+      rating: 1,
+      rated: 1, 
+      used: 1,
+      prime: 1,
+      delivery: 1,
+      originalPrice: 1,
+      offerOneDescription:1 ,
+      offerOneTitle: 1,
+      offerTwoDescription:1 ,
+      offerTwoTitle: 1,
+    });
+
+    if (!makeupProduct) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    res.status(200).json(makeupProduct);
+  } catch (error) {
+    console.error("Error fetching makeup product by ID:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+
+app.get("/api/Indian", async (req, res) => {
+  try {
+    const makeupProducts = await Image.find({ category: 'indian' }, { title: 1, description: 1, price: 1, imageData: 1, category: 1 , rating: 1, rated: 1, used: 1, prime: 1, delivery: 1, originalPrice: 1, offerOneDescription:1 , offerOneTitle: 1, offerTwoDescription:1 , offerTwoTitle: 1});
+    console.log("Fetched makeup products:", makeupProducts);
+    res.status(200).json(makeupProducts);
+  } catch (error) {
+    console.error("Error fetching makeup products:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+app.get("/api/Indian/:productId", async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+    const makeupProduct = await Image.findById(productId, {
+      title: 1,
+      description: 1,
+      price: 1,
+      imageData: 1,
+      category: 1,
+      rating: 1,
+      rated: 1, 
+      used: 1,
+      prime: 1,
+      delivery: 1,
+      originalPrice: 1,
+      offerOneDescription:1 ,
+      offerOneTitle: 1,
+      offerTwoDescription:1 ,
+      offerTwoTitle: 1,
+    });
+
+    if (!makeupProduct) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    res.status(200).json(makeupProduct);
+  } catch (error) {
+    console.error("Error fetching makeup product by ID:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+
+app.get("/api/Oneplusprod", async (req, res) => {
+  try {
+    const makeupProducts = await Image.find({ category: 'oneplus' }, { title: 1, description: 1, price: 1, imageData: 1, category: 1 , rating: 1, rated: 1, used: 1, prime: 1, delivery: 1, originalPrice: 1, offerOneDescription:1 , offerOneTitle: 1, offerTwoDescription:1 , offerTwoTitle: 1});
+    console.log("Fetched makeup products:", makeupProducts);
+    res.status(200).json(makeupProducts);
+  } catch (error) {
+    console.error("Error fetching makeup products:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+app.get("/api/Oneplusprod/:productId", async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+    const makeupProduct = await Image.findById(productId, {
+      title: 1,
+      description: 1,
+      price: 1,
+      imageData: 1,
+      category: 1,
+      rating: 1,
+      rated: 1, 
+      used: 1,
+      prime: 1,
+      delivery: 1,
+      originalPrice: 1,
+      offerOneDescription:1 ,
+      offerOneTitle: 1,
+      offerTwoDescription:1 ,
+      offerTwoTitle: 1,
+    });
+
+    if (!makeupProduct) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    res.status(200).json(makeupProduct);
+  } catch (error) {
+    console.error("Error fetching makeup product by ID:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+
 
 
 

@@ -5,7 +5,7 @@ const imageSchema = new mongoose.Schema({
     description: String,
     price: Number,
     imageData: String, // Store only the file name
-    category: String,
+    category: {type: [String] },
     rated: String,
     used: String,
     rating: { type: Number, default: 0 },
